@@ -268,5 +268,44 @@ function xmldb_zoom_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2018091400, 'zoom');
     }
 
+    if ($oldversion < 2018092201) {
+
+        // Changing type of field userid on table zoom_meeting_participants to int.
+        $table = new xmldb_table('zoom_meeting_participants');
+
+        $index = new xmldb_index('userid', XMLDB_INDEX_NOTUNIQUE, ['userid']);
+
+        // Conditionally launch drop index userid.
+        if ($dbman->index_exists($table, $index)) {
+            $dbman->drop_index($table, $index);
+        }
+
+        $field = new xmldb_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'id');
+
+        // Launch change of type for field userid.
+        $dbman->change_field_type($table, $field);
+
+        $index = new xmldb_index('userid', XMLDB_INDEX_NOTUNIQUE, ['userid']);
+
+        // Conditionally launch add index userid.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Zoom savepoint reached.
+        upgrade_mod_savepoint(true, 2018092201, 'zoom');
+    }
+
+    if ($oldversion < 2019061800) {
+        // Make sure start_time is not null to match install.xml.
+        $table = new xmldb_table('zoom_meeting_details');
+        $field = new xmldb_field('start_time', XMLDB_TYPE_INTEGER, '12', null, XMLDB_NOTNULL, null, null);
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->change_field_notnull($table, $field);
+        }
+        // Zoom savepoint reached.
+        upgrade_mod_savepoint(true, 2019061800, 'zoom');
+    }
+
     return true;
 }

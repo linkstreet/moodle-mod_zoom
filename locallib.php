@@ -127,7 +127,7 @@ function zoom_get_state($zoom) {
     $config = get_config('mod_zoom');
     $now = time();
 
-    if ($zoom->type == ZOOM_RECURRING_MEETING_WITH_FIXED_TIME) {
+    if ($zoom->recurring == true) {
         $service = new mod_zoom_webservice();
         $meetings = $service->get_meeting_webinar_info($zoom->meeting_id, $zoom->webinar)->occurrences;
         //Get the latest meeting start time
@@ -638,4 +638,17 @@ function get_zoom_users_from_group($groupingid) {
                                         AND u.deleted = 0
                                         AND u.suspended = 0
                                 ");
+}
+
+/**
+ * Get meeting recordings
+ * @param $meeting_id
+ * @return mixed
+ */
+function get_zoom_meeting_recordings($meeting_id) {
+    global $DB;
+    return $DB->get_records_sql("SELECT rec.play_url,rec.download_url,
+        rec.status,rec.start_time
+        from mdl_zoom_recordings as rec
+        where rec.meeting_id = {$meeting_id}");
 }

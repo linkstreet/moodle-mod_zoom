@@ -45,6 +45,9 @@ $string['auto_rec_cloud'] = 'Record on Cloud';
 $string['auto_rec_local'] = 'Record on Local';
 $string['auto_rec_none'] = 'Disabled';
 $string['auto_recording'] = 'Auto Recording';
+$string['view_joinsession'] = 'Join the session';
+$string['view_recording'] = 'Recordings';
+$string['err_recording_not_found'] = 'Sorry, no record found';
 $string['auto_recording_help'] = 'Record on cloud option is only available to pre-authorized Zoom accounts.';
 $string['cachedef_zoomid'] = 'The zoom user id of the user';
 $string['cachedef_sessions'] = 'Information from the zoom get user report request';
@@ -190,6 +193,7 @@ $string['form_endingtype_help'] = '<p>Set an ending type for your recurring sess
 		For example, you can define a session to end after 6 meetings. This would set a daily session to end after 6 days, a weekly session to end after 6 weeks, and a monthly session to end after 6 months.</p>
 	</li>
 </ol>';
+$string['update_recording'] = "Update zoom recordings";
 $string['form_enddate'] = 'Ending on';
 $string['form_enddate_help'] = 'This setting works with the Ending type "Ending."  The date you set here will be the last date your recurring session occurs on.';
 $string['form_endafter'] = 'Every after X sessions(s)';
@@ -214,6 +218,18 @@ $string['zoomurl'] = 'Zoom home page URL';
 $string['zoomurl_desc'] = '';
 $string['zoom:view'] = 'View Zoom meetings';
 $string['send_zoom_notifications'] = 'Send zoom meeting notifications and reminders';
+
+$string['record_settings'] = 'Recording';
+$string['form_enable_stream_url'] = 'Allow users to view';
+$string['form_enable_stream_url_help'] = '';
+$string['form_enable_download_url'] = 'Allow users to download';
+$string['form_enable_download_url_help'] = '';
+$string['enable_stream_url_desc'] = '';
+$string['enable_download_url_desc'] = '';
+$string['enablestreamurl'] = 'Enable Streaming URL';
+$string['enabledownloadurl'] = 'Enable Download URL';
+$string['enablestreamurl_desc'] = '';
+$string['enabledownloadurl_desc'] = '';
 
 // Email
 $string['msg_header'] = 'Dear {$a},';

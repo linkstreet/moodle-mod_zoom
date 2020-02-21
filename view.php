@@ -203,7 +203,7 @@ if (!empty($records)) {
                 $start_time = $value->start_time;
                 $date =  zoom_convert_date_time(strtotime($start_time), 'jS F Y, g:i A') . ' ' . usertimezone(); 
                 $created_date = date_create($date);
-                $disply_date = date_format($created_date,"m-d-Y");
+                $disply_date = date_format($created_date, 'm-d-Y');
                 $display .= '<br>&nbsp;'.$disply_date.'<br>'.'&nbsp;<a target="_blank" href="'.$play_urls.'">View |</a>&nbsp;<a target="_blank" href="'.$download_urls.'">Download</a>';   
             }
             $display .= '</br>';
@@ -215,19 +215,19 @@ if (!empty($records)) {
                 $start_time = $value->start_time;
                 $date =  zoom_convert_date_time(strtotime($start_time), 'jS F Y, g:i A') . ' ' . usertimezone(); 
                 $created_date = date_create($date);
-                $disply_date = date_format($created_date,"m-d-Y");
+                $disply_date = date_format($created_date, 'm-d-Y');
                 $display .= '<br>&nbsp;'.$disply_date.'<br>'.'&nbsp;<a target="_blank" href="'.$play_urls.'">View';
             }
             $display .= '</br>';
             $table->data[] = [get_string('view_recording','zoom'),$display];
-    }else if($zoom->enable_download_url== 1){
+    } else if($zoom->enable_download_url== 1){
         $display = '';
         foreach ($records as $key => $value) {
                 $download_urls = $value->download_url;
                 $start_time = $value->start_time;
                 $date =  zoom_convert_date_time(strtotime($start_time), 'jS F Y, g:i A') . ' ' . usertimezone(); 
                 $created_date = date_create($date);
-                $disply_date = date_format($created_date,"m-d-Y");
+                $disply_date = date_format($created_date, 'm-d-Y');
                 $display .= '<br>&nbsp;'.$disply_date.'<br>'.'&nbsp;<a target="_blank" href="'.$download_urls.'">Download';
             }
             $display .= '</br>';

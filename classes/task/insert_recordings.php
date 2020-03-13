@@ -65,8 +65,8 @@ require_once($CFG->dirroot.'/mod/zoom/classes/webservice.php');
                 $record->start_time = $rec->recording_start;
                 $record->end_time = $rec->recording_end;
                 $record->status = $rec->status;
-                $insert_record = $DB->insert_record('zoom_recordings', $record);
-                if(!empty($insert_record)) {
+                $insert_record = $DB->insert_record('zoom_recordings', $record, true);
+                if($insert_record == true) {
                     $DB->update_record('event', (object)['id' => $value->id, 'recording_created' => 1]);
                 }
             }

@@ -62,9 +62,9 @@ require_once($CFG->dirroot.'/mod/zoom/classes/webservice.php');
             $record->end_time = $rec->recording_end;
             $record->status = $rec->status;
             $zoom_recordings = $DB->insert_record('zoom_recordings', $record);
-              if(is_int($zoom_recordings)) {
-                  $DB->update_record('event', (object)['id' => $value->id, 'recording_created' => 1]);
-              }
+            if (is_int($zoom_recordings)) {
+              $DB->update_record('event', (object)['id' => $value->id, 'recording_created' => 1]);
+            }
           } else {
             mtrace('No recordings found for the meeting_id: '. $value->meeting_id);
           }

@@ -54,7 +54,7 @@ require_once($CFG->dirroot.'/mod/zoom/classes/webservice.php');
             } catch (\moodle_exception $error) {
                 mtrace('No recordings found for the meeting_id: '. $value->meeting_id);
             }
-             if (!empty($recordings) && !empty($recordings->recording_files{0})) {
+            if (!empty($recordings) && !empty($recordings->recording_files{0})) {
                 //Get only the first recording file
                 $rec = $recordings->recording_files{0};
                 $record = new\stdClass();
@@ -65,10 +65,12 @@ require_once($CFG->dirroot.'/mod/zoom/classes/webservice.php');
                 $record->start_time = $rec->recording_start;
                 $record->end_time = $rec->recording_end;
                 $record->status = $rec->status;
-                $insert_record = $DB->insert_record('zoom_recordings', $record, true);
-                if($insert_record == true) {
+                $zoom_recordings = $DB->insert_record('zoom_recordings', $record);
+                if(is_int($zoom_recordings)) {
                     $DB->update_record('event', (object)['id' => $value->id, 'recording_created' => 1]);
                 }
+            } else {
+                mtrace('No recordings found for the meeting_id: '. $value->meeting_id);
             }
         }  
     }

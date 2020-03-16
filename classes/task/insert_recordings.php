@@ -70,7 +70,7 @@ require_once($CFG->dirroot.'/mod/zoom/classes/webservice.php');
                 mtrace('No recordings found for the meeting_id: '. $value->meeting_id);
             }
             } catch (\moodle_exception $error) {
-                mtrace('No recordings found for the meeting_id: '. $value->meeting_id);
+                mtrace('Recordings could not be updated: '. $error);
             }
         }  
     }

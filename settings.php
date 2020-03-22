@@ -113,6 +113,10 @@ if ($ADMIN->fulltree) {
         	'', ZOOM_REC_NONE, $autorecordingchoices);
     $settings->add($defaultautorecording);
 
+    $zoomchoices = zoom_get_time_zones();
+    $defaulttimezone = new admin_setting_configselect('mod_zoom/defaulttimezone','Time zone','','America/New_York',$zoomchoices);
+    $settings->add($defaulttimezone);
+
     $defaultjoinbeforehost = new admin_setting_configcheckbox('mod_zoom/defaultjoinbeforehost', get_string('option_jbh', 'zoom'),
             '', 0, 1, 0);
     $settings->add($defaultjoinbeforehost);

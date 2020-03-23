@@ -96,7 +96,7 @@ class mod_zoom_mod_form extends moodleform_mod {
 
         $mform->addElement('select', 'timezone', 'Time zone', zoom_get_time_zones());
         $mform->hideIf('timezone', 'type', 'eq', ZOOM_RECURRING_MEETING);
-        $mform->setDefault('timezone', 'America/New_York');
+        $mform->setDefault('timezone', $config->defaulttimezone);
 
         // Add duration.
         $mform->addElement('text', 'duration', get_string('duration', 'zoom'), array('size' => '10'));

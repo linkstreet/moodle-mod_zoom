@@ -74,6 +74,7 @@ $event->add_property('dtend', Bennu::timestamp_to_datetime($start_time + $durati
 
 // Compute and add description property to event.
 $convertedtext = html_to_text($zoom->intro);
+$descriptiontext = '';
 if (!empty($convertedtext)) {
     $descriptiontext .= get_string('calendardescriptionintro', 'mod_zoom', $convertedtext);
 }

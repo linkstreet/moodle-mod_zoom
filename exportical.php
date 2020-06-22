@@ -29,6 +29,7 @@ require_once($CFG->libdir.'/bennu/bennu.inc.php');
 
 // Course_module ID.
 $id = required_param('id', PARAM_INT);
+$start_time = required_param('start_time', PARAM_TEXT);
 if ($id) {
     $cm         = get_coursemodule_from_id('zoom', $id, 0, false, MUST_EXIST);
     $course     = get_course($cm->course);
@@ -49,18 +50,6 @@ $ical = new iCalendar;
 $ical->add_property('method', 'PUBLISH');
 $ical->add_property('prodid', '-//Moodle Pty Ltd//NONSGML Moodle Version ' . $CFG->version . '//EN');
 
-list($inprogress, $available, $finished, $start_time) = zoom_get_state($zoom);
-if (in_array($zoom->type, [ZOOM_RECURRING_MEETING_WITH_FIXED_TIME, ZOOM_RECURRING_WEBINAR])) {
-    $start_date = '';
-    $events = $DB->get_records_sql("SELECT *
-                             FROM {event} e
-                            WHERE modulename = 'zoom'
-                                AND instance = $zoom->id
-                         ORDER BY timestart ASC");
-}
-foreach ($events as $key => $value) {
-	$duration = $value->timeduration;
-}
 // Create event and populate properties.
 $event = new iCalendar_event;
 $hostaddress = str_replace('http://', '', $CFG->wwwroot);
@@ -70,7 +59,7 @@ $event->add_property('summary', $zoom->name); // Title.
 $event->add_property('dtstamp', Bennu::timestamp_to_datetime()); // Time of creation.
 $event->add_property('last-modified', Bennu::timestamp_to_datetime($zoom->timemodified));
 $event->add_property('dtstart',Bennu::timestamp_to_datetime($start_time)); // Start time.
-$event->add_property('dtend', Bennu::timestamp_to_datetime($start_time + $duration)); // End time.
+$event->add_property('dtend', Bennu::timestamp_to_datetime($start_time + $zoom->duration * MINSECS)); // End time.
 
 // Compute and add description property to event.
 $convertedtext = html_to_text($zoom->intro);

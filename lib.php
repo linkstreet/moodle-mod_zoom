@@ -146,7 +146,11 @@ function populate_zoom_from_response(stdClass $zoom, stdClass $response) {
     }
 
     if (isset($response->encrypted_password)) {
-        $newzoom->join_url = $newzoom->join_url . '?pwd=' . $response->encrypted_password;
+        $join_url = $newzoom->join_url;
+        if (strpos($join_url, '?pwd') != false) {
+            $join_url = explode('?pwd',  $join_url)[0];
+        }
+        $newzoom->join_url = $join_url . '?pwd=' . $response->encrypted_password;
     }
 
     if (isset($response->duration)) {

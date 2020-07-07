@@ -551,7 +551,7 @@ function zoom_send_reminder($config, $currenttime) {
 
     if (!empty($zoom)) {
         foreach ($zoom as $event) {
-            if ($event->enableremindermail == 1 && $event->sessiontime > $currenttime) {
+            if ($event->enableremaindermail == 1 && $event->sessiontime > $currenttime) {
                 if ($event->course_id != 0) {
                     if ($event->groupingid == 0) {
                         $attendees = get_zoom_users_from_course($event->course_id);

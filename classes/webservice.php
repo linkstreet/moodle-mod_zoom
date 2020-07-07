@@ -595,7 +595,7 @@ class mod_zoom_webservice {
         }
 
         if ($zoom->endtype == EndType::END_BY_DATE && isset($zoom->enddate)) {
-            $recurrence_settings['end_date_time'] = gmdate('Y-m-d\T00:00:00\Z', $zoom->enddate);
+            $recurrence_settings['end_date_time'] = gmdate('Y-m-d\T23:59:00\Z', strtotime('+1 day', $zoom->enddate));
         } elseif (isset($zoom->endafter)) {
             $recurrence_settings['end_times'] = (int) $zoom->endafter;
         }

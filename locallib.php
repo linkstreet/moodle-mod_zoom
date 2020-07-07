@@ -619,6 +619,7 @@ function get_zoom_users_from_course($courseid) {
                                    JOIN {role_assignments} ra ON ra.userid = u.id
                                   WHERE u.deleted = 0
                                         AND u.suspended = 0
+                                        AND ra.roleid = 5
                                         AND contextid = ?", array(context_course::instance($courseid)->id)
     );
 }
@@ -632,10 +633,12 @@ function get_zoom_users_from_group($groupingid) {
     global $DB;
     return $DB->get_records_sql("SELECT DISTINCT u.id, CONCAT(u.firstname ,' ', u.lastname) AS fullname, u.timezone
                                    FROM {user} u
+                                   JOIN {role_assignments} ra ON ra.userid = u.id
                                    JOIN {groups_members} gm ON u.id = gm.userid
                                    JOIN {groupings_groups} gg ON gg.groupid = gm.groupid
                                   WHERE gg.groupingid = $groupingid
                                         AND u.deleted = 0
+                                        AND ra.roleid = 5
                                         AND u.suspended = 0
                                 ");
 }

@@ -7,3 +7,5 @@ ALTER TABLE `mdl_event` ADD `endtime` bigint(12) NULL;
 ALTER TABLE `mdl_zoom` ADD `enable_stream_url` TINYINT(1) NOT NULL DEFAULT '0';
 
 ALTER TABLE `mdl_zoom` ADD `enable_download_url` TINYINT(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `mdl_zoom` ADD `join_auth` TINYINT(1) NOT NULL DEFAULT '0' AFTER `enable_download_url`;

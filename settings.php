@@ -133,7 +133,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('mod_zoom/enableremindermail',get_string('enableremindermail','zoom'),
         get_string('enableremindermail_desc','zoom'),1));
 
-     $defaultjoinauthuser = new admin_setting_configcheckbox('mod_zoom/defaultjoinauthuser', get_string('auth_user', 'zoom'),
+     $defaultjoinauthuser = new admin_setting_configcheckbox('mod_zoom/defaultjoinauthuser', get_string('join_auth', 'zoom'),
             '', 0, 1, 0);
     $settings->add($defaultjoinauthuser);
 

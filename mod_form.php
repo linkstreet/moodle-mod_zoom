@@ -326,10 +326,10 @@ class mod_zoom_mod_form extends moodleform_mod {
 
         //authenticated user
         $mform->addGroup(array(
-            $mform->createElement('advcheckbox', 'auth_user', '', get_string('auth_user', 'zoom'))
-        ), 'join_auth', get_string('join_auth', 'zoom'), null, false);
+            $mform->createElement('advcheckbox', 'join_auth', '', get_string('join_auth', 'zoom'))
+        ), 'auth_user', get_string('auth_user', 'zoom'), null, false);
         $mform->setDefault('join_auth', $config->defaultjoinauthuser);
-        $mform->addHelpButton('join_auth', 'join_auth', 'zoom');
+        $mform->addHelpButton('auth_user', 'auth_user', 'zoom');
         
         // Add alternative hosts.
         $mform->addElement('text', 'alternative_hosts', get_string('alternative_hosts', 'zoom'), array('size' => '64'));

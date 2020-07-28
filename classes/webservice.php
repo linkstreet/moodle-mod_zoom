@@ -327,6 +327,7 @@ class mod_zoom_webservice {
      */
     protected function _database_to_api($zoom) {
         global $CFG;
+        $config = get_config('mod_zoom');
 
         $data = array(
             'topic' => $zoom->name,
@@ -359,6 +360,13 @@ class mod_zoom_webservice {
         }
         if (isset($zoom->password)) {
             $data['password'] = $zoom->password;
+        }
+        if (isset($zoom->enable_meeting_authentication)) {
+            $data['settings']['meeting_authentication'] = (bool) $zoom->enable_meeting_authentication;
+            if ((bool) $zoom->enable_meeting_authentication) {
+                $data['settings']['authentication_option'] = $config->auth_option;
+                $data['settings']['authentication_domains'] = $config->auth_domain;
+            }
         }
         if (isset($zoom->alternative_hosts)) {
             $data['settings']['alternative_hosts'] = $zoom->alternative_hosts;

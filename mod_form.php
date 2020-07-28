@@ -268,6 +268,13 @@ class mod_zoom_mod_form extends moodleform_mod {
         $mform->addRule('password', get_string('err_password', 'mod_zoom'), 'regex', $regex, 'client');
         $mform->disabledIf('password', 'webinar', 'checked');
 
+        //Enable meeting authentication
+        $mform->addGroup(array(
+            $mform->createElement('advcheckbox', 'enable_meeting_authentication', '', '')
+        ), 'enable_meeting_authentication', get_string('auth_user', 'zoom'), null, false);
+        $mform->setDefault('enable_meeting_authentication', $config->enable_meeting_authentication);
+        $mform->addHelpButton('enable_meeting_authentication', 'auth_user', 'zoom');
+
         // Add host/participants video (checked by default).
         $mform->addGroup(array(
             $mform->createElement('radio', 'option_host_video', '', get_string('on', 'zoom'), true),
@@ -323,19 +330,12 @@ class mod_zoom_mod_form extends moodleform_mod {
         $mform->addElement('selectyesno','enable_reminder_mail', get_string('form_enable_reminder_mail', 'zoom'));
         $mform->setDefault('enable_reminder_mail', $config->enableremindermail);
         $mform->addHelpButton('enable_reminder_mail', 'form_enable_reminder_mail', 'zoom');
-
-        //authenticated user
-        $mform->addGroup(array(
-            $mform->createElement('advcheckbox', 'join_auth', '', get_string('join_auth', 'zoom'))
-        ), 'auth_user', get_string('auth_user', 'zoom'), null, false);
-        $mform->setDefault('join_auth', $config->defaultjoinauthuser);
-        $mform->addHelpButton('auth_user', 'auth_user', 'zoom');
         
         // Add alternative hosts.
         $mform->addElement('text', 'alternative_hosts', get_string('alternative_hosts', 'zoom'), array('size' => '64'));
         $mform->setType('alternative_hosts', PARAM_TEXT);
         // Set the maximum field length to 255 because that's the limit on Zoom's end.
-        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
+        $mform->addRule('alternative_hosts', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('alternative_hosts', 'alternative_hosts', 'zoom');
 
         // Add meeting id.

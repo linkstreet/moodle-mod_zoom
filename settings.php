@@ -133,9 +133,15 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('mod_zoom/enableremindermail',get_string('enableremindermail','zoom'),
         get_string('enableremindermail_desc','zoom'),1));
 
-     $defaultjoinauthuser = new admin_setting_configcheckbox('mod_zoom/defaultjoinauthuser', get_string('join_auth', 'zoom'),
-            '', 0, 1, 0);
-    $settings->add($defaultjoinauthuser);
+    $defaultauthuser = new admin_setting_configcheckbox('mod_zoom/enable_meeting_authentication', get_string('auth_user', 'zoom'),
+        get_string('auth_user_help', 'zoom'), 0, 1, 0);
+    $settings->add($defaultauthuser);
+
+    $settings->add(new admin_setting_configtext('mod_zoom/auth_option', get_string('auth_option', 'zoom'),
+        get_string('auth_option_help', 'zoom'), ''));
+
+    $settings->add(new admin_setting_configtext('mod_zoom/auth_domain', get_string('auth_domain', 'zoom'),
+        get_string('auth_domain_help', 'zoom'), ''));
 
     $settings->add(new admin_setting_configtext('mod_zoom/reminder_time',get_string('remindertime','zoom'),
         get_string('remindertime_desc','zoom'),15,PARAM_INT));

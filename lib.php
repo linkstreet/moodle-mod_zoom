@@ -180,6 +180,9 @@ function populate_zoom_from_response(stdClass $zoom, stdClass $response) {
     if (isset($response->settings->alternative_hosts)) {
         $newzoom->alternative_hosts = $response->settings->alternative_hosts;
     }
+    if (isset($response->settings->meeting_authentication)) {
+        $newzoom->enable_meeting_authentication = $response->settings->meeting_authentication;
+    }
     if (isset($response->password)) {
         $newzoom->password = $response->password;
     }

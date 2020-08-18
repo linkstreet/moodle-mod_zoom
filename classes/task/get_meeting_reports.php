@@ -166,24 +166,6 @@ class get_meeting_reports extends \core\task\scheduled_task {
         // Cleanup the name. For some reason # gets into the name instead of a comma.
         $participant->name = str_replace('#', ',', $participant->name);
 
-        // Try to see if we successfully queried for this user and found a Moodle id before.
-        if (!empty($participant->id)) {
-            // Sometimes uuid is blank from Zoom.
-            $participantmatches = $DB->get_records('zoom_meeting_participants',
-                    array('uuid' => $participant->id), null, 'id, userid, name');
-
-            if (!empty($participantmatches)) {
-                // Found some previous matches. Find first one with userid set.
-                foreach ($participantmatches as $participantmatch) {
-                    if (!empty($participantmatch->userid)) {
-                        $moodleuserid = $participantmatch->userid;
-                        $name = $participantmatch->name;
-                        break;
-                    }
-                }
-            }
-        }
-
         // Did not find a previous match.
         if (empty($moodleuserid)) {
             if (!empty($participant->user_email) && ($moodleuserid =

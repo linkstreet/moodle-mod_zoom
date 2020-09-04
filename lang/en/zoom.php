@@ -136,6 +136,8 @@ $string['recurringmeetinglong'] = 'Recurring meeting (meeting with no end date o
 $string['report'] = 'Reports';
 $string['reportapicalls'] = 'Report API calls exhausted';
 $string['requirepassword'] = 'Require meeting password';
+$string['enableteachermail'] = 'Notify Teachers by E-mail';
+$string['enableteachermail_desc'] = 'Update/Reminder mail will send to enrolled Teachers';
 $string['enablenotifymail'] = 'Mail Notification';
 $string['enableremindermail'] = 'Reminder Mail';
 $string['resetapicalls'] = 'Reset the number of available API calls';
@@ -205,6 +207,8 @@ $string['form_enddate_help'] = 'This setting works with the Ending type "Ending.
 $string['form_endafter'] = 'Every after X sessions(s)';
 $string['form_endafter_help'] = 'This setting defines the total number of recurring sessions scheduled. For example, you can define a session\'s schedule to end after 6 meetings.  
 This will work with whatever session type you defined previously (ie, if you defined a Weekly session on Thursday, the session would end after 6 Thursdays).';
+$string['form_enable_teacher_mail'] = 'Enable notifications to enrolled Teachers';
+$string['form_enable_teacher_mail_help'] = 'Mail notification will send to enrolled teachers';
 $string['form_enable_notify_mail'] = 'Enable mail notification';
 $string['form_enable_notify_mail_help'] = '';
 $string['form_enable_reminder_mail'] = 'Enable mail reminder';

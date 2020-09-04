@@ -323,6 +323,11 @@ class mod_zoom_mod_form extends moodleform_mod {
         ), null , get_string('auto_recording', 'zoom'));
         $mform->setDefault('auto_recording', $config->defaultautorecording);
 
+        //Enable mail notifications for teachers
+        $mform->addElement('selectyesno', 'enable_teacher_mail', get_string('form_enable_teacher_mail', 'zoom'));
+        $mform->setDefault('enable_teacher_mail', $config->enableteachermail);
+        $mform->addHelpButton('enable_teacher_mail', 'form_enable_teacher_mail', 'zoom');
+
         $mform->addElement('selectyesno', 'enable_notify_mail', get_string('form_enable_notify_mail', 'zoom'));
         $mform->setDefault('enable_notify_mail', $config->enablenotifymail);
         $mform->addHelpButton('enable_notify_mail', 'form_enable_notify_mail', 'zoom');

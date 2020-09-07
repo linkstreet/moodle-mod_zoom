@@ -472,10 +472,15 @@ function zoom_send_notification($config, $currenttime) {
             // Notifications should be send after crossing the session time
             if ($meeting->enablenotifymail == 1 && $meeting->sessiontime > $currenttime) {
                 if ($meeting->course_id != 0) {
+                    $recipient_roles = [5];
+                	if ($meeting->enable_teacher_mail == 1) {
+                		$recipient_roles[] = 3;
+                	}
+                	
                     if ($meeting->groupingid == 0) {
-                        $attendees = get_zoom_users_from_course($meeting->course_id);
+                        $attendees = get_zoom_users_from_course($meeting->course_id, $recipient_roles);
                     } else {
-                        $attendees = get_zoom_users_from_group($meeting->groupingid);
+                        $attendees = get_zoom_users_from_group($meeting->groupingid, $recipient_roles);
                     }
                 } else {
                     // Todo: currently skipping the meeting which is created
@@ -612,16 +617,17 @@ function zoom_get_mail_body($event, $attendee, &$param) {
  * @return array
  * @throws dml_exception
  */
-function get_zoom_users_from_course($courseid) {
+function get_zoom_users_from_course($courseid,$recipient_roles) {
     global $DB;
-    return $DB->get_records_sql("SELECT DISTINCT u.id, CONCAT(u.firstname ,' ', u.lastname) AS fullname, u.timezone
+    	$recipient_roles = implode(',', $recipient_roles);
+    	return $DB->get_records_sql("SELECT DISTINCT u.id, CONCAT(u.firstname ,' ', u.lastname) AS fullname, u.timezone
                                    FROM {user} u
                                    JOIN {role_assignments} ra ON ra.userid = u.id
                                   WHERE u.deleted = 0
                                         AND u.suspended = 0
-                                        AND ra.roleid = 5
+                                        AND ra.role_id IN ({recipient_roles})
                                         AND contextid = ?", array(context_course::instance($courseid)->id)
-    );
+    									);
 }
 
 /**
@@ -629,16 +635,17 @@ function get_zoom_users_from_course($courseid) {
  * @return array
  * @throws dml_exception
  */
-function get_zoom_users_from_group($groupingid) {
+function get_zoom_users_from_group($groupingid, $recipient_roles) {
     global $DB;
+    $recipient_roles = implode(',', $recipient_roles);
     return $DB->get_records_sql("SELECT DISTINCT u.id, CONCAT(u.firstname ,' ', u.lastname) AS fullname, u.timezone
                                    FROM {user} u
                                    JOIN {role_assignments} ra ON ra.userid = u.id
                                    JOIN {groups_members} gm ON u.id = gm.userid
                                    JOIN {groupings_groups} gg ON gg.groupid = gm.groupid
-                                  WHERE gg.groupingid = $groupingid
+                                   WHERE gg.groupingid = $groupingid
                                         AND u.deleted = 0
-                                        AND ra.roleid = 5
+                                        AND ra.role_id IN ({recipient_roles})
                                         AND u.suspended = 0
                                 ");
 }

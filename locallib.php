@@ -455,7 +455,7 @@ function zoom_send_notification($config, $currenttime) {
     $zoom = $DB->get_records_sql("SELECT z.id, z.course as course_id, z.user_id, z.name as sessionname, z.intro, cm.groupingid, cm.id as meeting_id,
                                            z.start_time as sessiontime, z.duration as sessionduration, z.enable_notify_mail as enablenotifymail, 
                                            z.enable_notify_mail as enableremaindermail, z.duration, z.timezone, z.created_at, 
-                                           z.timemodified, cm.groupingid
+                                           z.timemodified, cm.groupingid,z.enable_teacher_mail
                                     FROM {zoom} z
                                         JOIN {course} c ON c.id = z.course
                                         JOIN {course_modules} cm ON cm.instance = z.id
@@ -476,7 +476,6 @@ function zoom_send_notification($config, $currenttime) {
                 	if ($meeting->enable_teacher_mail == 1) {
                 		$recipient_roles[] = 3;
                 	}
-                	
                     if ($meeting->groupingid == 0) {
                         $attendees = get_zoom_users_from_course($meeting->course_id, $recipient_roles);
                     } else {
@@ -540,7 +539,7 @@ function zoom_send_reminder($config, $currenttime) {
     $zoom = $DB->get_records_sql("SELECT z.id id, z.course course_id, z.enable_reminder_mail as enableremaindermail, 
                                           z.name as sessionname, z.intro, cm.groupingid, cm.id as meeting_id,
                                           z.duration as sessionduration, z.timezone, z.user_id,
-                                          z.start_time as sessiontime, cm.groupingid
+                                          z.start_time as sessiontime, cm.groupingid,z.enable_teacher_mail
                                      FROM {event} e 
                                      JOIN {zoom} z ON z.id = e.instance
                                      JOIN {course} c ON c.id = z.course
@@ -558,10 +557,14 @@ function zoom_send_reminder($config, $currenttime) {
         foreach ($zoom as $event) {
             if ($event->enableremaindermail == 1 && $event->sessiontime > $currenttime) {
                 if ($event->course_id != 0) {
+                	$recipient_roles = [5];
+                	if ($event->enable_teacher_mail == 1) {
+                		$recipient_roles[] = 3;
+                	}
                     if ($event->groupingid == 0) {
-                        $attendees = get_zoom_users_from_course($event->course_id);
+                        $attendees = get_zoom_users_from_course($event->course_id,$recipient_roles );
                     } else {
-                        $attendees = get_zoom_users_from_group($event->groupingid);
+                        $attendees = get_zoom_users_from_group($event->groupingid,$recipient_roles );
                     }
                 } else {
                     // Todo: currently skipping the session which is created
@@ -625,7 +628,7 @@ function get_zoom_users_from_course($courseid,$recipient_roles) {
                                    JOIN {role_assignments} ra ON ra.userid = u.id
                                   WHERE u.deleted = 0
                                         AND u.suspended = 0
-                                        AND ra.role_id IN ({recipient_roles})
+                                        AND ra.roleid IN ({$recipient_roles})
                                         AND contextid = ?", array(context_course::instance($courseid)->id)
     									);
 }
@@ -645,7 +648,7 @@ function get_zoom_users_from_group($groupingid, $recipient_roles) {
                                    JOIN {groupings_groups} gg ON gg.groupid = gm.groupid
                                    WHERE gg.groupingid = $groupingid
                                         AND u.deleted = 0
-                                        AND ra.role_id IN ({recipient_roles})
+                                        AND ra.roleid IN ({$recipient_roles})
                                         AND u.suspended = 0
                                 ");
 }

@@ -626,11 +626,11 @@ function get_zoom_users_from_course($courseid,$recipient_roles) {
     	return $DB->get_records_sql("SELECT DISTINCT u.id, CONCAT(u.firstname ,' ', u.lastname) AS fullname, u.timezone
                                    FROM {user} u
                                    JOIN {role_assignments} ra ON ra.userid = u.id
-                                  WHERE u.deleted = 0
+                                   WHERE u.deleted = 0
                                         AND u.suspended = 0
                                         AND ra.roleid IN ({$recipient_roles})
                                         AND contextid = ?", array(context_course::instance($courseid)->id)
-    									);
+    							);
 }
 
 /**

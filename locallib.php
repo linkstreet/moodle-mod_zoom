@@ -630,7 +630,7 @@ function get_zoom_users_from_course($courseid,$recipient_roles) {
                                         AND u.suspended = 0
                                         AND ra.roleid IN ({$recipient_roles})
                                         AND contextid = ?", array(context_course::instance($courseid)->id)
-    							);
+    							    );
 }
 
 /**

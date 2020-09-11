@@ -11,3 +11,6 @@ ALTER TABLE `mdl_zoom` ADD `enable_download_url` TINYINT(1) NOT NULL DEFAULT '0'
 
 
 ALTER TABLE `mdl_zoom` ADD `enable_meeting_authentication` TINYINT(1) NOT NULL DEFAULT '0';
+
+
+ALTER TABLE `mdl_zoom` ADD `enable_teacher_mail` TINYINT(1) NOT NULL DEFAULT '0';

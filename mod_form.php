@@ -330,6 +330,11 @@ class mod_zoom_mod_form extends moodleform_mod {
         $mform->addElement('selectyesno','enable_reminder_mail', get_string('form_enable_reminder_mail', 'zoom'));
         $mform->setDefault('enable_reminder_mail', $config->enableremindermail);
         $mform->addHelpButton('enable_reminder_mail', 'form_enable_reminder_mail', 'zoom');
+
+         //Enable mail notifications for teachers
+        $mform->addElement('selectyesno', 'enable_teacher_mail', get_string('form_enable_teacher_mail', 'zoom'));
+        $mform->setDefault('enable_teacher_mail', $config->enableteachermail);
+        $mform->addHelpButton('enable_teacher_mail', 'form_enable_teacher_mail', 'zoom');
         
         // Add alternative hosts.
         $mform->addElement('text', 'alternative_hosts', get_string('alternative_hosts', 'zoom'), array('size' => '64'));

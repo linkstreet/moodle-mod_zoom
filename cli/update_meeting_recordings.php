@@ -54,70 +54,81 @@ if ($options['help']) {
 }
 
 $trace = new text_progress_trace();
-$meetings = [];
+$events = [];
 
 if (!empty($options['meeting_id'])) {
-    $sql = "SELECT * FROM mdl_zoom as mz
-                     JOIN mdl_event e on e.instance = mz.id
-            WHERE e.modulename = 'zoom'
-              AND mz.deleted_at IS NULL
-              AND mz.meeting_id = ?
+    $sql = "SELECT e.*, mz.meeting_id, mz.auto_recording, mz.webinar 
+              FROM mdl_event as e
+              JOIN mdl_zoom mz on e.instance = mz.id
+              WHERE e.modulename = 'zoom'
+                AND e.recording_created = 0
+                AND mz.deleted_at IS NULL 
+                AND mz.meeting_id = ?
               AND e.endtime < UNIX_TIMESTAMP(NOW())";
 
     try {
-        $meetings = $DB->get_records_sql($sql, array($options['meeting_id']));
+        $events = $DB->get_records_sql($sql, array($options['meeting_id']));
     } catch (Exception $e) {
         $trace->output('Exception: ' . $e->getMessage(), 1);
     }
 
 } else {
-    $sql = "SELECT * FROM mdl_zoom as mz
-              JOIN mdl_event e on e.instance = mz.id
-            WHERE e.modulename = 'zoom'
-              AND e.recording_created = 0
-              AND mz.deleted_at IS NULL
-              AND e.endtime < UNIX_TIMESTAMP(NOW())
-            GROUP BY mz.meeting_id";
+    $sql = "SELECT e.*, mz.meeting_id, mz.auto_recording, mz.webinar 
+              FROM mdl_event as e
+              JOIN mdl_zoom mz on e.instance = mz.id
+              WHERE e.modulename = 'zoom'
+                AND e.recording_created = 0
+                AND mz.deleted_at IS NULL 
+             AND e.endtime < UNIX_TIMESTAMP(NOW())";
     try {
-        $meetings = $DB->get_records_sql($sql);
+        $events = $DB->get_records_sql($sql);
     } catch (Exception $e) {
         $trace->output('Exception: ' . $e);
     }
 }
 
-if (empty($meetings)) {
+if (empty($events)) {
     cli_error('No meetings found to update.');
 }
 
 $service = new \mod_zoom_webservice();
 
-foreach ($meetings as $meeting) {
-    $meeting_id  = $meeting->meeting_id;
+foreach (keyByMeetingId($events) as $meeting_id => $events) {
 
     $trace->output(sprintf('Processing details of meeting_id: %d', $meeting_id));
 
     try {
-        $completed_meetings = $service->get_past_meeting_instances($meeting_id, $meeting->webinar);
+        $completed_meetings = $service->get_past_meeting_instances($meeting_id, $events->webinar);
     } catch (Exception $e) {
         mtrace('Error while fetching past meetings for meeting id: '. $meeting_id);
         $trace->output('Exception: ' . $e);
         continue;
     }
 
+    foreach ($events as $event) {
 
-    foreach ($completed_meetings->meetings as $event) {
+        $trace->output(sprintf('Processing details of event_id: %d', $event->id));
+
+        $uuid = fetchEventUUID($completed_meetings, $event);
+
+        if (empty($uuid)) {
+            mtrace('UUID not found for event_id: ', $event->id);
+            continue;
+        }
+
         //Check if the recordings exists already
         if ($DB->get_record('zoom_recordings',
             array('meeting_id' => $meeting_id,
                 'uuid' => $event->uuid))
         ) {
+            mtrace('Skipping recording update as it already exists for event_id: ', $event->id);
             continue;
         }
 
         try {
             $service->update_recording_settings($meeting_id, ['viewer_download' => false]);
 
-            $recordings = $service->get_meeting_recording(formatUUID($event->uuid));
+            $recordings = $service->get_meeting_recording(formatUUID($uuid));
 
             if (!empty($recordings) && !empty($recordings->recording_files{0})) {
                 //Get only the first recording file
@@ -132,10 +143,10 @@ foreach ($meetings as $meeting) {
                 $record->status = $rec->status;
                 $zoom_recordings = $DB->insert_record('zoom_recordings', $record);
                 if (is_int($zoom_recordings)) {
-                    $DB->update_record('event', (object)['id' => $meeting->id, 'recording_created' => 1]);
-                    mtrace('Recordings updated for meeting id: '. $recordings->id. ' and uuid: '. $recordings->uuid);
+                    $DB->update_record('event', (object)['id' => $event->id, 'recording_created' => 1]);
+                    mtrace('Recordings updated for event id: '. $event->id. ' and uuid: '. $recordings->uuid);
                 } else {
-                    mtrace('Recordings could not be inserted for meeting id: '. $recordings->id. ' and uuid: '. $recordings->uuid);
+                    mtrace('Recordings could not be inserted for event id: '. $event->id. ' and uuid: '. $recordings->uuid);
                 }
             } else {
                 mtrace('No recordings found for the meeting_id: '. $meeting_id);
@@ -143,7 +154,11 @@ foreach ($meetings as $meeting) {
         } catch (\moodle_exception $error) {
             mtrace('Recordings could not be updated: '. $error);
         }
+
+        $trace->output(sprintf('---------------------------------------------'));
     }
+
+    $trace->output(sprintf('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'));
 }
 
 
@@ -153,11 +168,37 @@ foreach ($meetings as $meeting) {
  */
 function formatUUID($uuid)
 {
-    if (strpos($uuid, '/') !== false 
+    if (strpos($uuid, '/') !== false
         || strpos($uuid, '//') !== false
     ) {
         return '"' . $uuid . '"';
     }
 
     return $uuid;
+}
+
+function keyByMeetingId(array $events)
+{
+    $data = [];
+    foreach ($events as $event) {
+        $data[$event->meeting_id][] = $event;
+    }
+
+    return $data;
+}
+
+/**
+ * @param $completed_events
+ * @param $event
+ * @return mixed
+ */
+function fetchEventUUID($completed_events, $event)
+{
+    foreach ($completed_events->meetings as $completed_event) {
+        if (date('Y-m-d', strtotime($completed_event->start_time)) == date('Y-m-d', $event->timestart)) {
+            return $completed_event->uuid;
+        }
+    }
+
+    return '';
 }

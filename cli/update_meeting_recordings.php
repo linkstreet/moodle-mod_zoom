@@ -105,6 +105,9 @@ foreach (keyByMeetingId($events) as $meeting_id => $events) {
         continue;
     }
 
+    //Disable viewer download for all the recordings of the meeting
+    $service->update_recording_settings($meeting_id, ['viewer_download' => false]);
+
     foreach ($events as $event) {
 
         $trace->output(sprintf('Processing details of event_id: %d', $event->id));
@@ -126,8 +129,6 @@ foreach (keyByMeetingId($events) as $meeting_id => $events) {
         }
 
         try {
-            $service->update_recording_settings($meeting_id, ['viewer_download' => false]);
-
             $recordings = $service->get_meeting_recording(formatUUID($uuid));
 
             if (!empty($recordings) && !empty($recordings->recording_files{0})) {

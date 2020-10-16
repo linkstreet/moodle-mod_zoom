@@ -179,6 +179,10 @@ function formatUUID($uuid)
     return $uuid;
 }
 
+/**
+ * @param array $events
+ * @return array
+ */
 function keyByMeetingId(array $events)
 {
     $data = [];

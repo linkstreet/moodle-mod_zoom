@@ -122,8 +122,9 @@ foreach (keyByMeetingId($events) as $meeting_id => $events) {
         //Check if the recordings exists already
         if ($DB->get_record('zoom_recordings',
             array('meeting_id' => $meeting_id,
-                'uuid' => $event->uuid))
+                'uuid' => $uuid))
         ) {
+            $DB->update_record('event', (object)['id' => $event->id, 'recording_created' => 1]);
             mtrace('Skipping recording update as it already exists for event_id: ', $event->id);
             continue;
         }

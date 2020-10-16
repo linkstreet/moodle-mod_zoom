@@ -184,14 +184,11 @@ $table->data[] = array($straudioopt, get_string('audio_' . $zoom->option_audio, 
 $table->data[] = array($strautorec, get_string('auto_rec_' . $zoom->auto_recording, 'mod_zoom'));
 
 $records = get_zoom_meeting_recordings($zoom->meeting_id);
-$date_order = $DB->get_records_sql("SELECT *
-                             FROM {zoom_recordings}
-                             ORDER BY start_time ASC");
 if (!empty($records)) {
     if($zoom->enable_stream_url == 1 && $zoom->enable_download_url == 1){
         //$table->data[] = array(get_string('view_recording','zoom'));
         $display = '';
-        foreach ($date_order as $value) {
+        foreach ($records as $value) {
                 $play_urls = $value->play_url;
                 $download_urls = $value->download_url;
                 $start_time = $value->start_time;
@@ -204,7 +201,7 @@ if (!empty($records)) {
             $table->data[] = [get_string('view_recording','zoom'),$display];
     } else if($zoom->enable_stream_url == 1){
         $display = '';
-        foreach ($date_order as $key => $value) {
+        foreach ($records as $key => $value) {
                 $play_urls = $value->play_url;
                 $start_time = $value->start_time;
                 $date =  zoom_convert_date_time(strtotime($start_time), 'jS F Y, g:i A') . ' ' . usertimezone(); 
@@ -216,7 +213,7 @@ if (!empty($records)) {
             $table->data[] = [get_string('view_recording','zoom'),$display];
     } else if($zoom->enable_download_url== 1){
         $display = '';
-        foreach ($date_order as $key => $value) {
+        foreach ($records as $key => $value) {
                 $download_urls = $value->download_url;
                 $start_time = $value->start_time;
                 $date =  zoom_convert_date_time(strtotime($start_time), 'jS F Y, g:i A') . ' ' . usertimezone(); 

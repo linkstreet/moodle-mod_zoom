@@ -14,6 +14,26 @@ Must set the following settings to enable the plugin:
 * Zoom API secret (mod_zoom | apisecret)
 * Zoom home page URL (mod_zoom | zoomurl), Link to your organization's custom Zoom landing page.
 
+## CLI scripts
+
+* CLI script to manually resychronize the meeting report for a given course, meetingid, or meetinguuid
+
+    Options:
+        -h, --help      =>    Print out this help
+        -c, --courseid   =>   Course ID
+        -m, --meetingid   => Zoom meeting ID
+        -u, --meetinguuid =>  Zoom meeting UUID
+    
+    Usage: $sudo -u www-data /usr/bin/php mod/zoom/cli/update_meeting_report.php --courseid=1234
+
+* CLI script to manually update the recordings for all the missing recordings events or for a particular meeting_id 
+    
+    Options:
+        -h, --help  => Print out the help
+        -m, --meeting_id  =>  Zoom meeting ID
+        
+    Usage: $sudo -u www-data /usr/bin/php mod/zoom/cli/update_meeting_recordings.php --meeting_id=1234
+    
 ## Changelog
 
 v2.2

@@ -556,6 +556,24 @@ class mod_zoom_webservice {
     }
 
     /**
+     * Get a past meeting or webinar's information from Zoom.
+     *
+     * @param int $id The meeting_id or webinar_id of the meeting or webinar to retrieve.
+     * @param bool $webinar Whether the meeting or webinar whose information you want is a webinar.
+     * @return stdClass The meeting's or webinar's information.
+     */
+    public function get_past_meeting_instances($id, $webinar) {
+        $url = ($webinar ? 'past_webinars/' : 'past_meetings/') . $id . '/instances';
+        $response = null;
+        try {
+            $response = $this->_make_call($url);
+        } catch (moodle_exception $error) {
+            throw $error;
+        }
+        return $response;
+    }
+
+    /**
      * Prepare the recurring meeting settings
      * @param $zoom
      * @return array

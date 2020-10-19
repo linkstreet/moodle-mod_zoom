@@ -664,5 +664,5 @@ function get_zoom_meeting_recordings($meeting_id) {
         rec.status,rec.start_time
         from mdl_zoom_recordings as rec
         where rec.meeting_id = {$meeting_id}
-        ORDER BY rec.start_time ASC");
+        ORDER BY rec.start_time DESC");
 }

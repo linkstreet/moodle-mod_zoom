@@ -188,7 +188,7 @@ if (!empty($records)) {
     if($zoom->enable_stream_url == 1 && $zoom->enable_download_url == 1){
         //$table->data[] = array(get_string('view_recording','zoom'));
         $display = '';
-        foreach ($records as $value) {
+        foreach ($records as $key => $value) {
                 $play_urls = $value->play_url;
                 $download_urls = $value->download_url;
                 $start_time = $value->start_time;

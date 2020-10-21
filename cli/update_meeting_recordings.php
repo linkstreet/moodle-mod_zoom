@@ -114,7 +114,8 @@ foreach (keyByMeetingId($events) as $meeting_id => $events) {
         $uuid = fetchEventUUID($completed_meetings, $event);
 
         if (empty($uuid)) {
-            mtrace('UUID not found for event_id: ', $event->id);
+            $trace->output(sprintf('UUID not found for event_id: %d', $event->id));
+            $trace->output(sprintf('---------------------------------------------'));
             continue;
         }
 
@@ -124,7 +125,8 @@ foreach (keyByMeetingId($events) as $meeting_id => $events) {
                 'uuid' => $uuid))
         ) {
             $DB->update_record('event', (object)['id' => $event->id, 'recording_created' => 1]);
-            mtrace('Skipping recording update as it already exists for event_id: ', $event->id);
+            $trace->output(sprintf('Skipping recording update as it already exists for event_id: %d', $event->id));
+            $trace->output(sprintf('---------------------------------------------'));
             continue;
         }
 

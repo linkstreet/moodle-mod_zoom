@@ -61,7 +61,6 @@ if (!empty($options['meeting_id'])) {
               FROM mdl_event as e
               JOIN mdl_zoom mz on e.instance = mz.id
               WHERE e.modulename = 'zoom'
-                AND e.recording_created = 0
                 AND mz.deleted_at IS NULL 
                 AND mz.meeting_id = ?
               AND e.endtime < UNIX_TIMESTAMP(NOW())";
@@ -115,7 +114,8 @@ foreach (keyByMeetingId($events) as $meeting_id => $events) {
         $uuid = fetchEventUUID($completed_meetings, $event);
 
         if (empty($uuid)) {
-            mtrace('UUID not found for event_id: ', $event->id);
+            $trace->output(sprintf('UUID not found for event_id: %d', $event->id));
+            $trace->output(sprintf('---------------------------------------------'));
             continue;
         }
 
@@ -125,7 +125,8 @@ foreach (keyByMeetingId($events) as $meeting_id => $events) {
                 'uuid' => $uuid))
         ) {
             $DB->update_record('event', (object)['id' => $event->id, 'recording_created' => 1]);
-            mtrace('Skipping recording update as it already exists for event_id: ', $event->id);
+            $trace->output(sprintf('Skipping recording update as it already exists for event_id: %d', $event->id));
+            $trace->output(sprintf('---------------------------------------------'));
             continue;
         }
 

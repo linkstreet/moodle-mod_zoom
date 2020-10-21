@@ -61,7 +61,6 @@ if (!empty($options['meeting_id'])) {
               FROM mdl_event as e
               JOIN mdl_zoom mz on e.instance = mz.id
               WHERE e.modulename = 'zoom'
-                AND e.recording_created = 0
                 AND mz.deleted_at IS NULL 
                 AND mz.meeting_id = ?
               AND e.endtime < UNIX_TIMESTAMP(NOW())";

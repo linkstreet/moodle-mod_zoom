@@ -131,7 +131,7 @@ foreach (keyByMeetingId($events) as $meeting_id => $events) {
         }
 
         try {
-            $recordings = $service->get_meeting_recording(formatUUID($uuid));
+            $recordings = $service->get_meeting_recording($uuid);
 
             if (!empty($recordings) && !empty($recordings->recording_files{0})) {
                 //Get only the first recording file
@@ -162,22 +162,6 @@ foreach (keyByMeetingId($events) as $meeting_id => $events) {
     }
 
     $trace->output(sprintf('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'));
-}
-
-
-/**
- * @param $uuid
- * @return string
- */
-function formatUUID($uuid)
-{
-    if (strpos($uuid, '/') !== false
-        || strpos($uuid, '//') !== false
-    ) {
-        return '"' . $uuid . '"';
-    }
-
-    return $uuid;
 }
 
 /**

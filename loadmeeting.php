@@ -47,6 +47,7 @@ $context = context_module::instance($cm->id);
 $PAGE->set_context($context);
 
 require_capability('mod/zoom:view', $context);
+
 if ($userishost) {
     $nexturl = new moodle_url($zoom->start_url);
 } else {
@@ -65,8 +66,31 @@ if ($userishost) {
 
         zoom_grade_item_update($zoom, $grades);
     }
+    $queryToFindJoinUrl = "SELECT join_url FROM `mdl_zoom_meeting_registrant` 
+    WHERE email = (SELECT email FROM `mdl_user` WHERE id = $USER->id)
+    AND meeting_id = $zoom->meeting_id";
+    $userJoinUrl = $DB->get_record_sql($queryToFindJoinUrl);
 
-    $nexturl = new moodle_url($zoom->join_url, array('uname' => fullname($USER)));
+    if(!empty($userJoinUrl)) {
+        var_dump("entered not empty if");
+        $joinUrl = urldecode($userJoinUrl->join_url);
+        $nexturl = new moodle_url($joinUrl);
+    } else {
+        $queryToGetMeetingAndStudentDetails = "SELECT u.id, c.id AS 'program_id', mz.meeting_id, u.firstname, u.lastname, u.email
+        FROM mdl_user u
+                 JOIN mdl_user_enrolments ue ON ue.userid = u.id
+                 JOIN mdl_enrol e ON e.id = ue.enrolid
+                 JOIN mdl_role_assignments ra ON ra.userid = u.id
+                 JOIN mdl_context ct ON ct.id = ra.contextid AND ct.contextlevel = 50
+                 JOIN mdl_course c ON c.id = ct.instanceid 
+                 JOIN mdl_role r ON r.id = ra.roleid AND r.shortname = 'student'
+                 JOIN mdl_zoom mz ON mz.program_id = c.id AND mz.registration_type = 2
+                AND mz.meeting_id NOT IN (SELECT meeting_id FROM mdl_zoom_meeting_registrant)
+        WHERE e.status = 0 AND u.suspended = 0 AND u.deleted = 0
+        AND (ue.timeend = 0 OR ue.timeend > UNIX_TIMESTAMP(NOW())) AND ue.status = 0";
+        $meetingEnrolledUser = $DB->get_records_sql($queryToGetMeetingAndStudentDetails);
+    }
+    
 }
 
 // Record user's clicking join.

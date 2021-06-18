@@ -74,10 +74,12 @@ class mod_zoom_mod_form extends moodleform_mod {
                 }
             }
         }
-
+        var_dump("course ==>",intval($_GET['course']));
         // Start of form definition.
         $mform = $this->_form;
 
+        // Adding program id
+        $mform->addElement('hidden', 'program_id', intval($_GET['course']));
         // Adding the "general" fieldset, where all the common settings are showed.
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
@@ -107,7 +109,10 @@ class mod_zoom_mod_form extends moodleform_mod {
         $mform->hideIf('duration', 'type', 'eq', ZOOM_RECURRING_MEETING);
 
         $mform->addElement('advcheckbox', 'recurring', 'Recurring');
-
+        // Add user registration
+        $mform->addElement('advcheckbox', 'registration_type', 'Registration');
+        $mform->setDefault('registration_type', $config->defacultregistrationtype);
+        
         // Repeat type
         $meeting_types = [
             ZOOM_RECURRING_MEETING_WITH_FIXED_TIME => 'Recurring meeting with fixed time',

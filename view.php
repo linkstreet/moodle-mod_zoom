@@ -90,7 +90,7 @@ $strmuteopt = get_string('option_mute_upon_entry', 'mod_zoom');
 
 // Output starts here.
 echo $OUTPUT->header();
-
+var_dump($cm);
 if ($showrecreate) {
     // Only show recreate/delete links in the message for users that can edit.
     if ($iszoommanager) {

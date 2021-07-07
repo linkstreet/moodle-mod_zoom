@@ -133,9 +133,9 @@ foreach (keyByMeetingId($events) as $meeting_id => $events) {
         try {
             $recordings = $service->get_meeting_recording($uuid);
 
-            if (!empty($recordings) && !empty($recordings->recording_files{0})) {
+            if (!empty($recordings) && !empty($recordings->recording_files[0])) {
                 //Get only the first recording file
-                $rec = $recordings->recording_files{0};
+                $rec = $recordings->recording_files[0];
                 $record = new\stdClass();
                 $record->meeting_id = $recordings->id;
                 $record->uuid = $recordings->uuid;

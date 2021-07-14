@@ -50,9 +50,9 @@ require_once($CFG->dirroot.'/mod/zoom/classes/webservice.php');
         try {
           $this->disable_download_in_stream($value->meeting_id);
           $recordings = $service->get_meeting_recording($value->meeting_id);
-          if (!empty($recordings) && !empty($recordings->recording_files{0})) {
+          if (!empty($recordings) && !empty($recordings->recording_files[0])) {
             //Get only the first recording file
-            $rec = $recordings->recording_files{0};
+            $rec = $recordings->recording_files[0];
             $record = new\stdClass();
             $record->meeting_id = $recordings->id;
             $record->uuid = $recordings->uuid;

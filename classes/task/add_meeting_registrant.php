@@ -2,11 +2,12 @@
 
 namespace mod_zoom\task;
 
-
+defined('MOODLE_INTERNAL') || die();
 /**
  * Schedule task to add meeting registrant
  * 
  * @package mod_zoom
+ * @author Ashish Srivastav <ashish@linkstreet.in>
  */
 
 class add_meeting_registrant extends \core\task\scheduled_task {
@@ -74,7 +75,7 @@ class add_meeting_registrant extends \core\task\scheduled_task {
                     }
                    
             }catch(\moodle_exception $error) {
-                var_dump($error);
+                mtrace('Add meeting registrant failed: ' . $error);
             }
         }
         try {
@@ -88,21 +89,25 @@ class add_meeting_registrant extends \core\task\scheduled_task {
                 $meetingIdList = $DB->get_records_sql($queryToGetPendingStatusMeeting);
 
                 foreach($meetingIdList as $meeting) {
-                    $meetingRegistrantList = $service->get_meeting_registrants($meeting->meeting_id);
-                    foreach($meetingRegistrantList->registrants as $data) {
-                        if ($data->status == "approved") {
-                            $join_url = urlencode($data->join_url);
-                            $updateStatusAndJoinUrl = "UPDATE `mdl_zoom_meeting_registrant`
-                                SET join_url = '$join_url', status = '$data->status'  
-                                WHERE email = '$data->email' AND meeting_id = $meeting->meeting_id";
-                            $DB->execute($updateStatusAndJoinUrl);
+                    try {
+                        $meetingRegistrantList = $service->get_meeting_registrants($meeting->meeting_id);
+
+                        foreach($meetingRegistrantList->registrants as $data) {
+                            if ($data->status == "approved") {
+                                $join_url = urlencode($data->join_url);
+                                $updateStatusAndJoinUrl = "UPDATE `mdl_zoom_meeting_registrant`
+                                    SET join_url = '$join_url', status = '$data->status'  
+                                    WHERE email = '$data->email' AND meeting_id = $meeting->meeting_id";
+                                $DB->execute($updateStatusAndJoinUrl);
+                            }
                         }
-                    }
+                    } catch (\moodle_exception $error) {
+                        mtrace('Failed to get meeting registrants: ' . $error);
+                    }                    
                 }
-                
             }
         } catch (\moodle_exception $error) {
-            var_dump($error);
+            mtrace('Update meeting registrant status: ' . $error);
         }
 
     }

@@ -339,12 +339,10 @@ class mod_zoom_webservice {
                 'host_video' => (bool) ($zoom->option_host_video),
                 'audio' => $zoom->option_audio,
                 'mute_upon_entry' => (bool) ($zoom->option_mute_upon_entry),
-                'auto_recording' => $zoom->auto_recording,
-                'approval_type' => 1,
-                'registrants_email_notification' => false,
-                'allow_multiple_devices' => false
+                'auto_recording' => $zoom->auto_recording
             )
         );
+
         if ($zoom->webinar) {
             $data['type'] = $zoom->recurring ? ZOOM_RECURRING_WEBINAR : ZOOM_SCHEDULED_WEBINAR;
         } else {
@@ -379,8 +377,13 @@ class mod_zoom_webservice {
         if (isset($zoom->alternative_hosts)) {
             $data['settings']['alternative_hosts'] = $zoom->alternative_hosts;
         }
-        if(isset($zoom->registration_type)) {
+        if(isset($zoom->registration_type) && $zoom->registration_type == 2) {
             $data['settings']['registration_type'] = (int) $zoom->registration_type;
+            $data['settings']['approval_type'] = 1;
+            $data['settings']['registrants_email_notification'] = false;
+            $data['settings']['allow_multiple_devices'] = false;
+        }else {
+            $data['settings']['approval_type'] = 2;
         }
         if ($data['type'] == ZOOM_SCHEDULED_MEETING
             || $data['type'] != ZOOM_RECURRING_MEETING

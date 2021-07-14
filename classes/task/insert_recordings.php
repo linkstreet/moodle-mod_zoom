@@ -57,7 +57,7 @@ require_once($CFG->dirroot.'/mod/zoom/classes/webservice.php');
             $record->meeting_id = $recordings->id;
             $record->uuid = $recordings->uuid;
             $record->play_url = $rec->play_url;
-            $record->download_url = $rec->download_url;
+            $record->download_url = $rec->download_url . '?access_token=' . $recordings->download_access_token;
             $record->start_time = $rec->recording_start;
             $record->end_time = $rec->recording_end;
             $record->status = $rec->status;

@@ -435,7 +435,7 @@ class mod_zoom_webservice {
      */
     public function get_meeting_recording($meeting_id)
     {
-        return $this->_make_call('meetings/'.$meeting_id.'/recordings');
+        return $this->_make_call('meetings/'.$meeting_id.'/recordings?include_fields=download_access_token');
     }
 
     /**

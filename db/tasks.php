@@ -78,14 +78,5 @@ $tasks = [
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*'
-    ],
-    [
-        'classname' => 'mod_zoom\task\clear_registrant_record',
-        'blocking' => 0,
-        'minute' => '*/10',
-        'hour' => '*',
-        'day' => '*',
-        'dayofweek' => '*',
-        'month' => '*'
     ]
 ];
